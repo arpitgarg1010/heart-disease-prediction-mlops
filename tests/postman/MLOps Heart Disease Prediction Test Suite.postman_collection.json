@@ -1,0 +1,371 @@
+{
+  "info": {
+    "_postman_id": "4abe0bed-74da-4716-b76a-34aed846057b",
+    "name": "MLOps Heart Disease Prediction Test Suite",
+    "description": "This collection validates the heart disease prediction API by testing the `/predict` endpoint with a range of representative patient inputs.\n\nIt includes positive test cases for healthy, average-risk, and high-risk patient profiles to verify successful prediction responses, along with a negative test case that sends an incomplete JSON payload to confirm proper validation and error handling.\n\nOverall, this collection is intended to support API quality checks for model-serving behavior, response consistency, and input validation during development and testing.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "21874434"
+  },
+  "item": [
+    {
+      "name": "Predict scores for a healthy patient - 200",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response time is less than 200ms\", function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(200);",
+              "});",
+              "",
+              "pm.test(\"Response is valid JSON\", function () {",
+              "    pm.expect(function () {",
+              "        pm.response.json();",
+              "    }).to.not.throw();",
+              "});",
+              "",
+              "pm.test(\"Response has required fields\", function () {",
+              "    const json = pm.response.json();",
+              "    pm.expect(json).to.have.property(\"prediction\");",
+              "    pm.expect(json).to.have.property(\"confidence\");",
+              "});",
+              "",
+              "pm.test(\"Prediction is an integer classification label\", function () {",
+              "    const json = pm.response.json();",
+              "    pm.expect(json.prediction).to.be.a(\"number\");",
+              "    pm.expect(json.prediction % 1).to.equal(0);",
+              "    pm.expect([0, 1]).to.include(json.prediction);",
+              "});",
+              "",
+              "pm.test(\"Confidence is a valid probability\", function () {",
+              "    const json = pm.response.json();",
+              "    pm.expect(json.confidence).to.be.a(\"number\");",
+              "    pm.expect(json.confidence).to.be.at.least(0);",
+              "    pm.expect(json.confidence).to.be.at.most(1);",
+              "});",
+              "",
+              "pm.test(\"Healthy patient prediction is 0\", function () {",
+              "    const json = pm.response.json();",
+              "    pm.expect(json.prediction).to.equal(0);",
+              "});",
+              "",
+              "pm.test(\"Healthy patient confidence is high\", function () {",
+              "    const json = pm.response.json();",
+              "    pm.expect(json.confidence).to.be.above(0.90);",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"age\": 35,\r\n  \"sex\": 0,\r\n  \"cp\": 2,\r\n  \"trestbps\": 120,\r\n  \"chol\": 180,\r\n  \"fbs\": 0,\r\n  \"restecg\": 0,\r\n  \"thalach\": 175,\r\n  \"exang\": 0,\r\n  \"oldpeak\": 0.2,\r\n  \"slope\": 1,\r\n  \"ca\": 0,\r\n  \"thal\": 3\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/predict",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "predict"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Predict scores for a high risk patient - 200",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response time is less than 200ms\", function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(200);",
+              "});",
+              "",
+              "pm.test(\"Response is valid JSON\", function () {",
+              "    pm.expect(function () {",
+              "        pm.response.json();",
+              "    }).to.not.throw();",
+              "});",
+              "",
+              "pm.test(\"Response has required fields\", function () {",
+              "    const json = pm.response.json();",
+              "    pm.expect(json).to.have.property(\"prediction\");",
+              "    pm.expect(json).to.have.property(\"confidence\");",
+              "});",
+              "",
+              "pm.test(\"Prediction is an integer classification label\", function () {",
+              "    const json = pm.response.json();",
+              "    pm.expect(json.prediction).to.be.a(\"number\");",
+              "    pm.expect(json.prediction % 1).to.equal(0);",
+              "    pm.expect([0, 1]).to.include(json.prediction);",
+              "});",
+              "",
+              "pm.test(\"Confidence is a valid probability\", function () {",
+              "    const json = pm.response.json();",
+              "    pm.expect(json.confidence).to.be.a(\"number\");",
+              "    pm.expect(json.confidence).to.be.at.least(0);",
+              "    pm.expect(json.confidence).to.be.at.most(1);",
+              "});",
+              "",
+              "pm.test(\"Healthy patient prediction is 0\", function () {",
+              "    const json = pm.response.json();",
+              "    pm.expect(json.prediction).to.equal(1);",
+              "});",
+              "",
+              "pm.test(\"Healthy patient confidence is high\", function () {",
+              "    const json = pm.response.json();",
+              "    pm.expect(json.confidence).to.be.above(0.90);",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"age\": 68,\r\n  \"sex\": 1,\r\n  \"cp\": 4,\r\n  \"trestbps\": 170,\r\n  \"chol\": 320,\r\n  \"fbs\": 1,\r\n  \"restecg\": 2,\r\n  \"thalach\": 95,\r\n  \"exang\": 1,\r\n  \"oldpeak\": 4.0,\r\n  \"slope\": 3,\r\n  \"ca\": 3,\r\n  \"thal\": 7\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/predict",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "predict"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Predict scores for a average patient - 200",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response time is less than 200ms\", function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(200);",
+              "});",
+              "",
+              "pm.test(\"Response is valid JSON\", function () {",
+              "    pm.expect(function () {",
+              "        pm.response.json();",
+              "    }).to.not.throw();",
+              "});",
+              "",
+              "pm.test(\"Response has required fields\", function () {",
+              "    const json = pm.response.json();",
+              "    pm.expect(json).to.have.property(\"prediction\");",
+              "    pm.expect(json).to.have.property(\"confidence\");",
+              "});",
+              "",
+              "pm.test(\"Prediction is an integer classification label\", function () {",
+              "    const json = pm.response.json();",
+              "    pm.expect(json.prediction).to.be.a(\"number\");",
+              "    pm.expect(json.prediction % 1).to.equal(0);",
+              "    pm.expect([0, 1]).to.include(json.prediction);",
+              "});",
+              "",
+              "pm.test(\"Confidence is a valid probability\", function () {",
+              "    const json = pm.response.json();",
+              "    pm.expect(json.confidence).to.be.a(\"number\");",
+              "    pm.expect(json.confidence).to.be.at.least(0);",
+              "    pm.expect(json.confidence).to.be.at.most(1);",
+              "});",
+              "",
+              "pm.test(\"Healthy patient prediction is 0\", function () {",
+              "    const json = pm.response.json();",
+              "    pm.expect(json.prediction).to.equal(1);",
+              "});",
+              "",
+              "pm.test(\"Healthy patient confidence is high\", function () {",
+              "    const json = pm.response.json();",
+              "    pm.expect(json.confidence).to.be.below(0.90);",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"age\": 55,\r\n  \"sex\": 1,\r\n  \"cp\": 3,\r\n  \"trestbps\": 135,\r\n  \"chol\": 240,\r\n  \"fbs\": 0,\r\n  \"restecg\": 1,\r\n  \"thalach\": 145,\r\n  \"exang\": 0,\r\n  \"oldpeak\": 1.5,\r\n  \"slope\": 2,\r\n  \"ca\": 1,\r\n  \"thal\": 6\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/predict",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "predict"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Incomplete json request body - 422",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 422\", function () {",
+              "    pm.response.to.have.status(422);",
+              "});",
+              "",
+              "pm.test(\"Response time is below 500ms\", function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(500);",
+              "});",
+              "",
+              "pm.test(\"Response is valid JSON\", function () {",
+              "    pm.expect(() => pm.response.json()).to.not.throw();",
+              "});",
+              "",
+              "pm.test(\"Validation error response contains details\", function () {",
+              "    const json = pm.response.json();",
+              "    pm.expect(json).to.be.an(\"object\");",
+              "    pm.expect(Object.keys(json).length).to.be.above(0);",
+              "",
+              "    const hasDetail = Object.prototype.hasOwnProperty.call(json, \"detail\");",
+              "    const hasMessage = Object.prototype.hasOwnProperty.call(json, \"message\");",
+              "    const hasError = Object.prototype.hasOwnProperty.call(json, \"error\");",
+              "",
+              "    pm.expect(hasDetail || hasMessage || hasError).to.equal(true);",
+              "});",
+              "",
+              "pm.test(\"Validation detail is present and non-empty\", function () {",
+              "    const json = pm.response.json();",
+              "    const detail = json.detail ?? json.message ?? json.error;",
+              "",
+              "    if (Array.isArray(detail)) {",
+              "        pm.expect(detail.length).to.be.above(0);",
+              "    } else {",
+              "        pm.expect(detail).to.exist;",
+              "        pm.expect(String(detail).trim().length).to.be.above(0);",
+              "    }",
+              "});",
+              "",
+              "pm.test(\"Validation response does not include prediction result\", function () {",
+              "    const json = pm.response.json();",
+              "    pm.expect(json).to.not.have.property(\"prediction\");",
+              "    pm.expect(json).to.not.have.property(\"confidence\");",
+              "});",
+              "",
+              "pm.test(\"If detail is an array, at least one item points to a missing or invalid field\", function () {",
+              "    const json = pm.response.json();",
+              "    const detail = json.detail;",
+              "",
+              "    if (Array.isArray(detail)) {",
+              "        const serialized = JSON.stringify(detail).toLowerCase();",
+              "        pm.expect(serialized.length).to.be.above(2);",
+              "        pm.expect(",
+              "            serialized.includes(\"missing\") ||",
+              "            serialized.includes(\"field required\") ||",
+              "            serialized.includes(\"invalid\") ||",
+              "            serialized.includes(\"type\")",
+              "        ).to.equal(true);",
+              "    } else {",
+              "        pm.expect(true).to.equal(true);",
+              "    }",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"age\": 55,\r\n  \"sex\": 1,\r\n  \"cp\": 3,\r\n  \"trestbps\": 135,\r\n  \"fbs\": 0,\r\n  \"restecg\": 1,\r\n  \"thalach\": 145,\r\n  \"exang\": 0,\r\n  \"oldpeak\": 1.5,\r\n  \"slope\": 2,\r\n  \"ca\": 1,\r\n  \"thal\": 6\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/predict",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "predict"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

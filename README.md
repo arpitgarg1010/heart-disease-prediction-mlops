@@ -19,20 +19,57 @@ This project demonstrates the complete machine learning lifecycle:
 ----
 
 ## Tech Stack
-
 - Python
-- Pandas
-- NumPy
 - Scikit-learn
-- MLflow
 - FastAPI
+- MLflow
 - Docker
-- Github Actions
-- Kubernetes
-- AWS EC2
+- Postman
+- Newman
 
-----
+## Dataset
+UCI Heart Disease Dataset
 
-## Project Status
+## Project Workflow
+Data Acquisition
+↓
+EDA
+↓
+Preprocessing
+↓
+Model Training
+↓
+MLflow Tracking
+↓
+FastAPI
+↓
+Docker
+↓
+Deployment
 
-🚧 Currently Under development
+## Running the Project
+
+python -m venv .venv
+pip install -r requirements.txt
+
+uvicorn api.app:app --reload
+
+## Docker
+
+docker build -t heart-disease-api .
+
+docker run -p 8000:8000 heart-disease-api
+
+## API
+
+GET /
+
+POST /predict
+
+## Testing
+
+Postman Collection
+
+Newman Report
+
+## Folder Structure
