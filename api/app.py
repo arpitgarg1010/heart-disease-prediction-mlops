@@ -1,50 +1,47 @@
 from pathlib import Path
-
 import joblib
 import pandas as pd
-
 from fastapi import FastAPI
-
 from api.schemas import HeartData
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+MODEL_PATH = BASE_DIR / "models" / "best_model.joblib"
+
+model = joblib.load(MODEL_PATH)
 
 app = FastAPI(
     title="Heart Disease Prediction API",
-    version="1.0"
+    description="Production-style API for heart disease prediction.",
+    version="2.0.0",
 )
-
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-
-model = joblib.load(PROJECT_ROOT / "models" / "best_model.pkl")
-scaler = joblib.load(PROJECT_ROOT / "models" / "scaler.pkl")
-
-continuous = [
-    "age",
-    "trestbps",
-    "chol",
-    "thalach",
-    "oldpeak"
-]
 
 
 @app.get("/")
-def home():
+def root():
     return {
-        "message": "Heart Disease Prediction API is running."
+        "message": "Heart Disease Prediction API",
+        "version": "2.0.0",
+        "status": "running",
+    }
+
+
+@app.get("/health")
+def health():
+    return {
+        "status": "healthy",
+        "model_loaded": model is not None,
     }
 
 
 @app.post("/predict")
 def predict(data: HeartData):
+    input_data = pd.DataFrame([data.model_dump()])
 
-    df = pd.DataFrame([data.model_dump()])
+    prediction = int(model.predict(input_data)[0])
 
-    df[continuous] = scaler.transform(df[continuous])
-
-    prediction = int(model.predict(df)[0])
-
-    probability = float(model.predict_proba(df)[0].max())
+    probability = float(model.predict_proba(input_data)[0][1])
 
     return {
         "prediction": prediction,
-        "confidence": round(probability, 4)
+        "probability": round(probability, 4),
     }
