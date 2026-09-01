@@ -43,5 +43,5 @@ def predict(data: HeartData):
 
     return {
         "prediction": prediction,
-        "probability": round(probability, 4),
+        "confidence": round(probability, 4),
     }
