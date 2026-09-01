@@ -3,6 +3,7 @@ import joblib
 import pandas as pd
 from fastapi import FastAPI
 from api.schemas import HeartData
+from prometheus_fastapi_instrumentator import Instrumentator
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 MODEL_PATH = BASE_DIR / "models" / "best_model.joblib"
@@ -15,6 +16,7 @@ app = FastAPI(
     version="2.0.0",
 )
 
+Instrumentator().instrument(app).expose(app)
 
 @app.get("/")
 def root():
