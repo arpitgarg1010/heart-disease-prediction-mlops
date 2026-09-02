@@ -12,7 +12,7 @@ This project demonstrates the complete machine learning lifecycle:
 - API development
 - Containerization
 - CI/CD
-- Depolyment
+- Deployment
 - Monitoring
 
 
